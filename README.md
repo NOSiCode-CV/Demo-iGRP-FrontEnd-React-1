@@ -1,4 +1,9 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) made using [iGRP Studio](https://github.com/NOSiCode-CV/igrp-studio-ide) and can be cloned using "Clone Project" button:
+<img width="254" alt="image" src="https://github.com/user-attachments/assets/67c90a53-8a05-40f1-92e1-321638328478" />
+
+![image](https://github.com/user-attachments/assets/04e0481e-9bba-4f36-add3-c08854800be1)
+
+So iGRP Studio is just a generator for the code that you can open using VS code or other and for now run it in the terminal. Soon will be inside iGRP Studio in the run button.
 
 ## Getting Started
 
