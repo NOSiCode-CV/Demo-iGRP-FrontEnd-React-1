@@ -3,6 +3,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Getting Started
 
 First, run the development server:
+(use like yarn install if needed)
 
 ```bash
 npm run dev
@@ -14,7 +15,11 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see that Next.js is running and to see the pages, use the path showed in iGRP Studio (pic. below) to complete something like this for example [http://localhost:3000/listadecontribuintes](http://localhost:3000/listadecontribuintes).
+<img width="785" alt="image" src="https://github.com/user-attachments/assets/4e643620-caa8-44ee-ae9b-4eabf495de8e" />
+
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
