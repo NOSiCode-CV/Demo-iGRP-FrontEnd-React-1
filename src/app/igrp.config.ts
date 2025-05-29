@@ -42,6 +42,6 @@
 export default {
   types: [],
   actions: [],
-  functions: ['functions/page-service'],
+  functions: ['functions/page-service', 'functions/contribuinte-service'],
   components: ['components/shared-ui'],
 };

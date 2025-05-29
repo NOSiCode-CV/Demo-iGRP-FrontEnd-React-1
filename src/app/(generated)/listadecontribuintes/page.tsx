@@ -20,6 +20,7 @@ import { IGRPDataTableDropdownMenu } from "@igrp/igrp-framework-react-design-sys
 import { IGRPDataTableDropdownMenuModal } from "@igrp/igrp-framework-react-design-system";
 import { IGRPDataTableDropdownMenuAlert } from "@igrp/igrp-framework-react-design-system";
 import {loadPageList} from '@/app/(myapp)/functions/page-service'
+import {fetchContribuintes} from '@/app/(myapp)/functions/contribuinte-service'
 import { useRouter } from "next/navigation";
 import {getStatusBadge} from '@/app/(myapp)/functions/page-service'
 
@@ -29,12 +30,12 @@ export default function PageListadecontribuintesComponent() {
   
   type Table1 = {
     tableCheckboxCell1: string;
-    tableTextCell2: string;
-    tableTextCell1: string;
-    tableBadgeCell1: string;
-    tableDateCell1: string;
-    tableBadgeCell2: string;
-    tableBadgeCell3: string;
+    numero: string;
+    nome: string;
+    regime: string;
+    dataInicioAtividade: string;
+    estadoJuridico: string;
+    estado: string;
 }
 
   const [statstatsCard1Value, setStatstatsCard1Value] = useState<string | number>(0);
@@ -48,28 +49,36 @@ export default function PageListadecontribuintesComponent() {
   const [contentTabletable1, setContentTabletable1] = useState<Table1[]>([]);
   
   
+const [showFilter, setShowFilter] = useState<boolean>(false);
+
 const router = useRouter()
 
 // begin fnCode Carrega os dados quando o componente monta
+const [loading, setLoading] = useState(false)
 useEffect(() => {
   const loadData = async () => {
-    await loadPageList({
-      setContentTabletable1,
-      setStatstatsCard2Value,
-      setStatstatsCard4Value,
-      setStatstatsCard3Value,
-      setStatstatsCard1Value,
-      inputSearchinputSearch1Value,
-setSelectcombobox2Options
-    });
+    setLoading(true);
+    try {
+      const {list} = await fetchContribuintes(inputSearchinputSearch1Value); // toda a lógica está aqui
+      setContentTabletable1(list)
+
+      /*   setList(data.list);
+        setOptions(data.options);
+        setTotal(data.total);
+        setMessage(data.message); */
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setLoading(false);
+    }
   };
 
   loadData();
 }, [inputSearchinputSearch1Value]);
-//end
+//endfetchContribuintes();
 
-function onClicknovoTodo (): void {
-  router.push("novotodo");
+function onClicknovoContribuinte (): void {
+  router.push("novocontribuinte");
 }
 
 
@@ -89,7 +98,7 @@ function onClicknovoTodo (): void {
   showIcon={ true }
   iconName="Plus"
   className={ cn() }
-  onClick={ () => onClicknovoTodo() }
+  onClick={ () => onClicknovoContribuinte() }
 >
   Novo
 </IGRPButton>
@@ -179,7 +188,8 @@ setValueChange={ setInputSearchinputSearch1Value
   showIcon={ true }
   iconName="SlidersHorizontal"
   className={ cn() }
-  
+  onClick={ ()=>setShowFilter(!showFilter)
+ }
 >
   Filtros
 </IGRPButton>
@@ -216,11 +226,11 @@ setValueChange={ setInputSearchinputSearch1Value
   Button
 </IGRPButton>
 </div></div>
-<IGRPSeparator
+{ showFilter && (<IGRPSeparator
   orientation="horizontal"
   className={ cn('my-3',) }
-/>
-<div className={ cn('grid','grid-cols-3',' gap-4',)}   >
+/>)}
+{ showFilter && (<div className={ cn('grid','grid-cols-3',' gap-4',)}   >
 	<IGRPCombobox
   name="combobox2"
   placeholder="Select an option..."
@@ -250,7 +260,7 @@ options={ selectcombobox3Options }
   
   value={ undefined }
 options={ selectcombobox1Options }
-/></div>
+/></div>)}
 <div className={ cn('flex','flex flex-row flex-nowrap items-stretch justify-end gap-2',)}   >
 	<IGRPButton
   variant="outline"
@@ -264,14 +274,13 @@ options={ selectcombobox1Options }
 </IGRPButton>
 </div></div>
 <IGRPDataTable<Table1, Table1>
-  showFilter={ true }
-  showPagination={ true }
+  showPagination={ false }
   className={ cn() }
   columns={
     [
         {
-          header: ({ table }) => <IGRPDataTableHeaderRowsSelect table={table} title="" />
-,id: 'tableCheckboxCell1',
+          header: ({ table }) => <IGRPDataTableHeaderRowsSelect table={table} title=" " />
+,accessorKey: 'tableCheckboxCell1',
           cell: ({ row }) => {
           return <IGRPDataTableCellCheckbox
   row={ row }
@@ -282,29 +291,29 @@ options={ selectcombobox1Options }
         },
         {
           header: ({ column }) => (<IGRPDataTableHeaderSortToggle column={column} title="Numero" />)
-,accessorKey: 'tableTextCell2',
+,accessorKey: 'numero',
           cell: ({ row }) => {
-          return row.getValue("tableTextCell2")
+          return row.getValue("numero")
           },
         filterFn: IGRPDataTableFacetedFilterFn
         },
         {
           header: ({ column }) => (<IGRPDataTableHeaderSortToggle column={column} title="Nome" />)
-,accessorKey: 'tableTextCell1',
+,accessorKey: 'nome',
           cell: ({ row }) => {
-          return row.getValue("tableTextCell1")
+          return row.getValue("nome")
           },
         filterFn: IGRPDataTableFacetedFilterFn
         },
         {
           header: ({ column }) => (<IGRPDataTableHeaderSortToggle column={column} title="Regime" />)
-,accessorKey: 'tableBadgeCell1',
+,accessorKey: 'regime',
           cell: ({ row }) => {
           const rowData = row.original;
 
 
 return <IGRPDataTableCellBadge
-  label={ row.original.tableBadgeCell1 }
+  label={ row.original.regime }
   variant="soft"
 className={ "" }
 >
@@ -315,22 +324,22 @@ className={ "" }
         },
         {
           header: 'Data Inicio Actividade'
-,accessorKey: 'tableDateCell1',
+,accessorKey: 'dataInicioAtividade',
           cell: ({ row }) => {
-          return row.getValue("tableDateCell1")
+          return row.getValue("dataInicioAtividade")
           },
         filterFn: IGRPDataTableFacetedFilterFn
         },
         {
           header: ({ column }) => (<IGRPDataTableHeaderSortToggle column={column} title="Estado Juridico" />)
-,accessorKey: 'tableBadgeCell2',
+,accessorKey: 'estadoJuridico',
           cell: ({ row }) => {
           const rowData = row.original;
 
 
 return <IGRPDataTableCellBadge
-  label={ row.original.tableBadgeCell2 }
-  variant="outline"
+  label={ row.original.estadoJuridico }
+  variant="soft"
 className={ "" }
 >
 
@@ -340,14 +349,14 @@ className={ "" }
         },
         {
           header: ({ column }) => (<IGRPDataTableHeaderSortToggle column={column} title="Estado" />)
-,accessorKey: 'tableBadgeCell3',
+,accessorKey: 'estado',
           cell: ({ row }) => {
           const rowData = row.original;
 
 const { iconName, bgClass, textClass, label, className } = getStatusBadge(rowData);
 
 return <IGRPDataTableCellBadge
-  label={ label ?? row.original.tableBadgeCell3 }
+  label={ label ?? row.original.estado }
   variant="soft"
 className={ `${bgClass} ${textClass} ${className}` }
 >

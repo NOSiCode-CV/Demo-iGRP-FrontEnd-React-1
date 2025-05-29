@@ -69,7 +69,7 @@ const loadPageList = async (args: LoadPageArgs) => {
         .split('T')[0],
       tableBadgeCell3: ['Ativo', 'Suspenso', 'Cessado'][Math.floor(Math.random() * 3)],
       tableBadgeCell1: ['Regime Geral', 'Conta Própria'][Math.floor(Math.random() * 2)],
-      tableBadgeCell2: ['Individual', 'Empresa', 'Instituição'][Math.floor(Math.random() * 3)],
+      estadoJuridico: ['Individual', 'Empresa', 'Instituição'][Math.floor(Math.random() * 3)],
       tableAmountCell1: Math.floor(Math.random() * 1000),
     }));
 
@@ -118,13 +118,13 @@ function getStatusBadge(contribuinte?: any): {
 } {
   if (!contribuinte) return {};
   const bgClass =
-    contribuinte.tableBadgeCell3 === 'Ativo'
+    contribuinte.estado === 'Ativo'
       ? 'bg-green-100 text-green-800 hover:bg-green-100'
-      : contribuinte.tableBadgeCell3 === 'Suspenso'
+      : contribuinte.estado === 'Suspenso'
         ? 'bg-amber-100 text-amber-800 hover:bg-amber-100'
         : 'bg-red-100 text-red-800 hover:bg-red-100';
 
-  const label = contribuinte.tableBadgeCell3;
+  const label = contribuinte.estado;
   return { label, bgClass };
 }
 
