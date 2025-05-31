@@ -19,10 +19,12 @@ import { IGRPDataTableRowAction } from "@igrp/igrp-framework-react-design-system
 import { IGRPDataTableDropdownMenu } from "@igrp/igrp-framework-react-design-system";
 import { IGRPDataTableDropdownMenuModal } from "@igrp/igrp-framework-react-design-system";
 import { IGRPDataTableDropdownMenuAlert } from "@igrp/igrp-framework-react-design-system";
+import { IGRPDataTableFilterSelect } from "@igrp/igrp-framework-react-design-system";
 import {loadPageList} from '@/app/(myapp)/functions/page-service'
 import {fetchContribuintes} from '@/app/(myapp)/functions/contribuinte-service'
 import { useRouter } from "next/navigation";
 import {getStatusBadge} from '@/app/(myapp)/functions/page-service'
+import {deleteContribuinte} from '@/app/(myapp)/functions/contribuinte-service'
 
 
 export default function PageListadecontribuintesComponent() {
@@ -47,35 +49,37 @@ export default function PageListadecontribuintesComponent() {
   const [selectcombobox3Options, setSelectcombobox3Options] = useState<IGRPOptionsProps[]>([]);
   const [selectcombobox1Options, setSelectcombobox1Options] = useState<IGRPOptionsProps[]>([]);
   const [contentTabletable1, setContentTabletable1] = useState<Table1[]>([]);
+  const [selectFiltertableSelectFilter1Options, setSelectFiltertableSelectFilter1Options] = useState<IGRPOptionsProps[]>([]);
   
   
 const [showFilter, setShowFilter] = useState<boolean>(false);
 
+const [loading, setLoading] = useState<boolean>(true);
+
 const router = useRouter()
 
-// begin fnCode Carrega os dados quando o componente monta
-const [loading, setLoading] = useState(false)
 useEffect(() => {
+  let isMounted = true; // flag de controle
+
   const loadData = async () => {
     setLoading(true);
     try {
-      const {list} = await fetchContribuintes(inputSearchinputSearch1Value); // toda a lógica está aqui
-      setContentTabletable1(list)
-
-      /*   setList(data.list);
-        setOptions(data.options);
-        setTotal(data.total);
-        setMessage(data.message); */
+      const { list } = await fetchContribuintes(inputSearchinputSearch1Value);
+      if (isMounted) setContentTabletable1(list);
     } catch (e) {
-      console.log(e)
+      if (isMounted) console.error(e);
     } finally {
-      setLoading(false);
+      if (isMounted) setLoading(false);
     }
   };
 
   loadData();
+
+  return () => {
+    isMounted = false; // cleanup quando o componente for desmontado
+  };
 }, [inputSearchinputSearch1Value]);
-//endfetchContribuintes();
+
 
 function onClicknovoContribuinte (): void {
   router.push("novocontribuinte");
@@ -261,7 +265,7 @@ options={ selectcombobox3Options }
   value={ undefined }
 options={ selectcombobox1Options }
 /></div>)}
-<div className={ cn('flex','flex flex-row flex-nowrap items-stretch justify-end gap-2',)}   >
+{ showFilter && (<div className={ cn('flex','flex flex-row flex-nowrap items-stretch justify-end gap-2',)}   >
 	<IGRPButton
   variant="outline"
   size="default"
@@ -272,7 +276,7 @@ options={ selectcombobox1Options }
 >
   Limpar Filtros
 </IGRPButton>
-</div></div>
+</div>)}</div>
 <IGRPDataTable<Table1, Table1>
   showPagination={ false }
   className={ cn() }
@@ -306,6 +310,23 @@ options={ selectcombobox1Options }
         filterFn: IGRPDataTableFacetedFilterFn
         },
         {
+          header: ({ column }) => (<IGRPDataTableHeaderSortToggle column={column} title="Estado Juridico" />)
+,accessorKey: 'estadoJuridico',
+          cell: ({ row }) => {
+          const rowData = row.original;
+
+
+return <IGRPDataTableCellBadge
+  label={ row.original.estadoJuridico }
+  variant="soft"
+className={ "" }
+>
+
+</IGRPDataTableCellBadge>
+          },
+        filterFn: IGRPDataTableFacetedFilterFn
+        },
+        {
           header: ({ column }) => (<IGRPDataTableHeaderSortToggle column={column} title="Regime" />)
 ,accessorKey: 'regime',
           cell: ({ row }) => {
@@ -327,23 +348,6 @@ className={ "" }
 ,accessorKey: 'dataInicioAtividade',
           cell: ({ row }) => {
           return row.getValue("dataInicioAtividade")
-          },
-        filterFn: IGRPDataTableFacetedFilterFn
-        },
-        {
-          header: ({ column }) => (<IGRPDataTableHeaderSortToggle column={column} title="Estado Juridico" />)
-,accessorKey: 'estadoJuridico',
-          cell: ({ row }) => {
-          const rowData = row.original;
-
-
-return <IGRPDataTableCellBadge
-  label={ row.original.estadoJuridico }
-  variant="soft"
-className={ "" }
->
-
-</IGRPDataTableCellBadge>
           },
         filterFn: IGRPDataTableFacetedFilterFn
         },
@@ -404,6 +408,17 @@ return (
   }
   clientFilters={
     [
+        {
+          columnId: "numero",
+          component: (column) => (
+          <IGRPDataTableFilterSelect
+  column={column}
+  placeholder="Selecionar..."
+  
+  options={ selectFiltertableSelectFilter1Options }
+/>
+          )
+        },
     ]
   }
   
