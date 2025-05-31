@@ -81,8 +81,8 @@ useEffect(() => {
 }, [inputSearchinputSearch1Value]);
 
 
-function onClicknovoContribuinte (): void {
-  router.push("novocontribuinte");
+function goTolistaDeContribuintes (): void {
+  router.push("listadecontribuintes");
 }
 
 
@@ -102,7 +102,7 @@ function onClicknovoContribuinte (): void {
   showIcon={ true }
   iconName="Plus"
   className={ cn() }
-  onClick={ () => onClicknovoContribuinte() }
+  onClick={ () => goTolistaDeContribuintes() }
 >
   Novo
 </IGRPButton>
